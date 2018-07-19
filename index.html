@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css">
     <title>Ultimate Rock-Paper-Scissors!</title>
 </head>
 
@@ -14,13 +18,17 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center title-bar">
-                Title
+                <h1>
+                    Rock-Paper-Scissors
+                </h1>
             </div>
         </div>
         <div class="row">
             <div class="col lg-3" id="hero-battle-portrait">
+                Waiting for Player One
                 <div class="row justify-content-start">
-                    <div class="col-sm-6 nopadding" id="hero-portrait">
+                    <div class="col-sm-12 nopadding" id="hero-portrait">
+                        <button class="claim-player" id="claim-player1">Click to be Player 1</button>
                     </div>
                 </div>
                 <div class="row justify-content-start">
@@ -41,12 +49,15 @@
                 </div>
             </div>
             <div class="col-lg-6 text-center main-screen">
-                <div class="row" id="char-select">
+                <div class="row" id="player-name">
+
                 </div>
             </div>
             <div class="col lg-3" id="enemy-battle-portrait">
+                Waiting for Player Two
                 <div class="row justify-content-end">
-                    <div class="col-sm-6 nopadding" id="enemy-portrait">
+                    <div class="col-sm-12 nopadding" id="enemy-portrait">
+                        <button class="claim-player" id="claim-player2">Click to be Player 2</button>
                     </div>
                 </div>
                 <div class="row justify-content-end">
@@ -75,30 +86,77 @@
             <div class="col lg-3">
             </div>
         </div>
-        <div class="row game-start">
+        <div class="row">
             <div class="col md-6 text-center">
-                <button id="start-button">Push to start!</button>
-                <button class="initiallyHidden" id="atk-button">Attack!</button>
-                <button class="initiallyHidden" id="spatk-button">Special Attack!</button>
-                <button class="initiallyHidden" id="reset-button">Reset Game!</button>
+                INSTRUCTIONS: <span id="instructions-text"></span>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="tooltip"></div>
+
+        <div class="row" id="player-name">
+            <div class="col-md-12 text-center">
+                <form role="form">
+                    <div class="form-group row">
+                        <div class="col-md-12 form-inline justify-content-center">
+                            <input class="form-control-lg" id="playername-input" type="text" placeholder="Please type in your name.">
+                            <button class="btn btn-secondary" id="add-player" type="submit">Submit</button>
+
+                        </div>
+                    </div>
+                    <small id="playernameGuide" class="form-text text-muted">Please refrain from vulgar names.</small>
+                </form>
+            </div>
+        </div>
+
+        <div class="row" id="players-online">
+            <div class="col-md-12 text-center">
+                <div>
+                    <h3 class="">
+                        <strong>
+                            <span id="connected-viewers"></span>
+                        </strong> player(s) online right now.</h3>
+                </div>
 
             </div>
         </div>
-        <div class="row">
-                <div class="col-md-12">
-                    <div id="chat"></div>
-    
+
+        <div class="row" id="chatDiv">
+            <div class="col-md-12">
+                <div class="card text-white bg-primary border-primary">
+                    <div class="card-heading">
+                        <i class="fas fa-user"></i>
+                        <h6 class="card-title">ChatBox</h6>
+                        <div class="btn-group btn-group-sm float-right">
+                            Hello, <span id="userName"></span>
+                        </div>
+                    </div>
+                    <div class="card-body bg-light">
+                        <div class="row">
+                            <div class="col-sm-12" id="scollDiv">
+                                <table class="table table-hover" id="chatLog">
+                                    <tr>Test</tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <form>
+                            <div class="input-group input-group-md">
+                                <i class="fas fa-pencil-alt"></i>
+                                <input type="text" class="form-control" id="chatText" placeholder="Type your message here .." disabled>
+                                <span class="input-group-append">
+                                    <button class="btn btn-primary" type="submit" id="sendChat" disabled>Send</button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
+        </div>
+
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="./assets/javascript/game.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+    <script type="text/javascript" src="./assets/javascript/game.js"></script>
 </body>
 
 </html>

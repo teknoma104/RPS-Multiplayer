@@ -1,7 +1,59 @@
+/* body {
+    background-color: lightgrey;
+} */
+
 .title-bar {
     border: solid 1px black;
+    /* height: 200px; */
 }
 
-.hero-battle-portrait {
+.main-screen {
+    background-color: black;
+    color: white;
+    height: 288px;
+}
+
+#hero-battle-portrait {
     border: solid 1px red;
+}
+
+#enemy-battle-portrait {
+    border: solid 1px blue;
+}
+
+.card-title {
+    display:inline;
+}
+
+tr td:first-child {
+    font-weight: bold;
+    width: 100px;
+}
+
+#scrollDiv {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+#chat {
+    margin-top: 20px;
+}
+
+
+.hideThis {
+    display: none;
+}
+
+
+#player-name {
+    margin: 10px;
+}
+
+
+#players-online {
+    margin: 20px;
+}
+
+.card-heading {
+    padding: 0 5px;
 }
