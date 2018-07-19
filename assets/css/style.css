@@ -13,11 +13,11 @@
     height: 288px;
 }
 
-#hero-battle-portrait {
+#player1-side {
     border: solid 1px red;
 }
 
-#enemy-battle-portrait {
+#player2-side {
     border: solid 1px blue;
 }
 
