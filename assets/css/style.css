@@ -7,6 +7,11 @@
     /* height: 200px; */
 }
 
+#main-panel {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
 .main-screen {
     background-color: black;
     color: white;
@@ -44,16 +49,32 @@ tr td:first-child {
     display: none;
 }
 
-
 #player-name {
     margin: 10px;
 }
 
+.form-group {
+    margin: 0px;
+}
+
+#add-player {
+  height: 50px;
+  margin-left: 5px;
+}
+
+#playernameGuide {
+    margin: 0px;
+}
 
 #players-online {
     margin: 20px;
 }
 
 .card-heading {
-    padding: 0 5px;
+    padding: 0 10px;
+}
+
+#pencil-icon {
+    font-family: FontAwesome;
+    color: black;
 }
