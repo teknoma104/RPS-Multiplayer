@@ -27,12 +27,17 @@
 }
 
 .card-title {
-    display:inline;
+    display: inline;
 }
 
 tr td:first-child {
+    color: black;
     font-weight: bold;
     width: 100px;
+}
+
+td {
+    color: black;
 }
 
 #scrollDiv {
@@ -77,4 +82,45 @@ tr td:first-child {
 #pencil-icon {
     font-family: FontAwesome;
     color: black;
+}
+
+#p1-rps-buttons, #p2-rps-buttons {
+    display: inline;
+    height: 42px;
+}
+
+.rps-buttons {
+    margin: 5px 0;
+    margin-right: 5px;
+}
+
+#p1-rps-img {
+    height: 175px;
+}
+
+#p2-rps-img {
+    height: 175px;
+}
+
+#show-p1-results, #versus, #show-p2-results {
+    height: 200px;
+}
+
+#show-rps-results {
+    margin-bottom: 10px;
+}
+
+.nopadding {
+    padding: 0;
+    margin: 0;
+ }
+
+.rps-buttons:hover {
+    background-color: #555555;
+    color: white;
+}
+
+.claim-player:hover:enabled {
+    background-color: #555555;
+    color: white;
 }

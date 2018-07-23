@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    console.log("ready!");
+
     // Initialize Firebase
     var config = {
         apiKey: "AIzaSyB0RyNjY9rlD93xyk1VK3bIYisAQOZPr6I",
@@ -81,6 +83,9 @@ $(document).ready(function () {
     // When the client's connection state changes...
     // Re-using code from coderbay-viewtracker in-class activity
     connectedRef.on("value", function (snap) {
+        console.log("");
+        console.log("added", snap.key);
+
         // If they are connected..
         if (snap.val()) {
 
@@ -95,38 +100,73 @@ $(document).ready(function () {
     // When first loaded or when the connections list changes...
     // Re-using code from coderbay-viewtracker in-class activity
     connectionsRef.on("value", function (snap) {
+        console.log("");
         // Display the viewer count in the html.
         // The number of online users is the number of children in the connections list.
         userCount = snap.numChildren();
 
+        console.log("Number of people online: " + userCount);
         $("#connected-viewers").text(snap.numChildren());
     });
 
     // Listens for changes to player db in Firebase
     playerList.on("value", function (snapshot) {
+        console.log("");
+
         // The number of online users is the number of children in the connections list.
+        console.log("Counting # of players in FirebaseDB");
         var playerCount = snapshot.numChildren();
+        console.log("playerCount:  " + playerCount);
+
+        var playerDB = snapshot.val();
+
+        console.log(playerDB);
 
         // Increments total user key list by 1 so that there is no overlapping when multiple 
         // users join in and add their username to the firebase db
         userKeyList = playerCount + 1;
+        console.log("userKeyList(" + userKeyList + ") = playerCount(" + playerCount + ") + 1");
+
+        console.log("snapshot.length: " + snapshot.val().length);
 
         // Instead of using iteration loops, Firebase has a forEach function to traverse through each child element in the database
         snapshot.forEach(function (childSnapshot) {
+            console.log("--------------");
+
+            var key = childSnapshot.key;
+            console.log("childSnapshot.key:  " + childSnapshot.key);
+
             // childData will be the actual contents of the child
             // in this case, all the player values
             var childData = childSnapshot.val();
 
+            console.log("childData:");
+            console.log(childData);
+
+            console.log("childSnapshot.player:      " + childData.player);
+            console.log("childSnapshot.playerslot:  " + childData.playerslot);
+
             // If found player1 in firebase db under players section
             if (childData.playerslot === "player1") {
+                console.log("Player1 found in firebase db");
+                console.log("(childData.playerslot === 'player1') = true");
+                console.log("key[" + key + "]childData.playerslot: " + childData.playerslot);
+
                 player1Key = childSnapshot.key;
                 player1 = childData;
+                console.log("updating global varible player1 with data found for player1 from firebase db");
+                console.log(player1);
 
                 // Checks if the user playing is not player 1 (case when the user is player2)
                 // if true, sets global variable player 1 with all the information found in firebase db for player1
                 // then updates display with text of player1's name on the board then shows p1 scoreboard
                 // also hides the claim button to set yourself as player 1
                 if (localplayer1Status != "taken") {
+                    console.log("localplayer1Status != taken");
+                    // player1 = childData;
+
+                    // console.log(player1);
+
                     player1name = childData.player;
                     $("#player1-side-text").text(player1name);
                     $("#claim-player1").addClass("hideThis");
@@ -137,8 +177,14 @@ $(document).ready(function () {
 
             // If found player2 in firebase db under players section
             if (childData.playerslot === "player2") {
+                console.log("Player2 found in firebase db");
+                console.log("(childData.playerslot === 'player2') = true");
+                console.log("key[" + key + "]childData.playerslot: " + childData.playerslot);
+
                 player2Key = childSnapshot.key;
                 player2 = childData;
+                console.log("updating global varible player2 with data found for player1 from firebase db");
+                console.log(player2);
 
 
                 // Checks if the user playing is not player 2 (case when the user is player1)
@@ -146,6 +192,11 @@ $(document).ready(function () {
                 // then updates display with text of player2's name on the board then shows p2 scoreboard
                 // also hides the claim button to set yourself as player 2
                 if (localplayer2Status != "taken") {
+                    console.log("localplayer2Status != taken");
+                    // player2 = childData;
+
+                    // console.log(player2);
+
                     player2name = childData.player;
                     $("#player2-side-text").text(player2name);
                     $("#claim-player2").addClass("hideThis");
@@ -153,6 +204,8 @@ $(document).ready(function () {
 
                 $("#player2-scorecard").text("W: " + player2.wins + " | L: " + player2.losses + " | T: " + player2.ties);
             }
+
+            console.log("--------------");
         })
 
         // This condition checks when both player 1 and player 2 slots are found in the firebase DB
@@ -160,6 +213,9 @@ $(document).ready(function () {
         // After both players are in and start playing, the rounds keep going until a player disconnects
         // either by closing the browser or refreshing the page which forces the game to restart for everyone
         if (player1 && player2) {
+            console.log("==== BOTH PLAYERS ARE PRESENT ====");
+            console.log(player1);
+            console.log(player2);
 
             if (gameInPlay === "no") {
 
@@ -173,6 +229,11 @@ $(document).ready(function () {
 
     });
 
+    // For debugging use to see in console log when a new connection is added
+    // connectionsRef.on("child_added", function (snapshot) {
+    //     console.log("");
+    //     console.log("new connection added", snapshot.key);
+    // });
 
     // Listener for Firebase DB whenever a player gets removed from the player list
     // Once a disconnect happens, this will restart the game as if the user refreshed/first loaded the page
@@ -196,16 +257,12 @@ $(document).ready(function () {
 
         console.log("msg: " + msg);
 
-        console.log("player1 object:  " );
-        console.log(player1);
-        console.log("player2 object:  " );
-        console.log(player2);
-        console.log("player1.player:  " + player1.player);
-        console.log("player2.player:  " + player2.player);
+        console.log("player1.name:  " + player1.name);
+        console.log("player2.name:  " + player2.name);
 
 
-        if (disconnectedPlayerName === player2.player) {
-            console.log("(disconnectedPlayerName === player2.player) = " + (disconnectedPlayerName === player2.player));
+        if (disconnectedPlayerName === player2.name) {
+            console.log("(disconnectedPlayerName === player2.name) = " + (disconnectedPlayerName === player2.name));
             // resets if user is player 1 and player 2 d/c's
             if (localplayer1Status === "taken") {
                 console.log("localplayer1status:  " + localplayer1Status);
@@ -222,8 +279,8 @@ $(document).ready(function () {
             }
         }
 
-        if (disconnectedPlayerName === player1.player) {
-            console.log("disconnectedPlayerName === player1.player = " + disconnectedPlayerName === player1.player);
+        if (disconnectedPlayerName === player1.name) {
+            console.log("disconnectedPlayerName === player1.name = " + disconnectedPlayerName === player1.name);
             // resets if user is player 2 and player 1 d/c's
             if (localplayer2Status === "taken") {
                 console.log("localplayer2status:  " + localplayer2Status);
@@ -241,6 +298,41 @@ $(document).ready(function () {
         }
 
 
+        // // resets for spectator if either player 1 or player 2 d/c's
+        // if ((localplayer1Status != "taken") && (localplayer2Status != "taken")) {
+        //     console.log("resets for spectator if either player 1 or player 2 d/c's");
+
+        //     setTimeout(() => {
+        //         newGame()
+        //     }, 5000);
+
+        //     $("#instructions-text").text("A player has disconnected, restarting game in 5 seconds..");
+        // }
+
+        // Save the disconnection chat entry
+
+        // console.log("lastText:  " + lastText);
+        // console.log("msg:  "  + msg);
+        // console.log(lastText !== msg);
+        // if (lastText !== msg) {
+
+        //     chatLog.push({
+        //         name: "System",
+        //         text: msg
+        //     });
+        // }
+
+        console.log("comparing:  ")
+        console.log("(snapshot.key === userCurrentKey) = " + (snapshot.key === userCurrentKey));
+
+
+        console.log("function called because user d/c'd");
+        console.log("user key is " + userCurrentKey + " disconnected");
+        console.log("matches snapshot.key:  " + snapshot.key);
+        console.log("username is:  " + disconnectedPlayerName);
+        // var msg = userInputtedName + " has disconnected!";
+        console.log("msg: " + msg);
+
         chatLog.push({
             name: "System",
             text: msg
@@ -254,9 +346,16 @@ $(document).ready(function () {
     // It also watches for when both players turn are complete to call the decision() function to 
     // decide who won the round
     turnComplete.on("value", function (snapshot) {
+        var whoseTurn = snapshot.val();
+
+        console.log("whoseTurn: ");
+        console.log(whoseTurn);
 
         var player1turn = snapshot.child("player1").val();
         var player2turn = snapshot.child("player2").val();
+
+        console.log("player1turn: " + player1turn);
+        console.log("player2turn: " + player2turn);
 
 
         if ((localplayer1Status === "taken") && (player2turn === "done"))
@@ -265,16 +364,39 @@ $(document).ready(function () {
         if ((localplayer2Status === "taken") && (player1turn === "done"))
             $("#player1-info-text").text("Player 1 has made a move.");
 
-        // Both players finished picking their choices, calling decision function
         if ((player1turn === "done") && (player2turn === "done")) {
+            console.log("Both players finished picking their choices, calling decision function");
             decision();
         }
 
     });
 
+    // chatLog.limitToLast(1).on('child_added', function (childSnapshot) {
+
+    //     var snap = childSnapshot.val();
+
+    //     console.log("snap: ");
+    //     console.log(snap);
+
+    //     lastKey = childSnapshot.key;
+    //     console.log("last key for chat: " + lastKey);
+
+    //     lastText = childSnapshot.val().text;
+    //     console.log("last text for chat: " + lastText);
+
+    // });
+
     // Listener for whenever sends a text that gets pushed to the firebase database based on a new child added to chat key
     chatLog.on('child_added', function (snapshot) {
+        console.log("");
+        console.log("Someone typed something in chat or new user joined");
         var message = snapshot.val();
+
+        console.log(message);
+
+        console.log("current msg text:" + message.text);
+        // console.log("last text:  " + lastText);
+        // console.log((message.text !== lastText));
 
         // variable used to construct the table row containing the user's name + their text
         var text = "<tr>" + "<td>" + message.name + ": </td>" + "<td>" + message.text + "</td>" + "</tr>";
@@ -293,6 +415,8 @@ $(document).ready(function () {
     // ================== Button Event Listeners ==================
 
     $("#add-player").on("click", function (event) {
+        console.log("");
+        console.log("add player name button clicked");
 
         // Don't refresh the page!
         event.preventDefault();
@@ -303,8 +427,14 @@ $(document).ready(function () {
 
         // Condition check if the user entered a blank name or a valid name
         if (userInputtedName !== "") {
+            console.log("userInputtedName:  " + userInputtedName);
+            console.log("playerWins:  " + playerWins);
+            console.log("playerLosses" + playerLosses);
 
             userCurrentKey = userKeyList;
+            console.log("userKeyList: " + userKeyList);
+            console.log("userCurrentKey: " + userCurrentKey);
+
 
             $("#userName").text(userInputtedName);
 
@@ -323,6 +453,7 @@ $(document).ready(function () {
 
             // increments global userkeylist to make sure no user will have the same user key
             userKeyList++;
+            console.log("userKeyList is now:  " + userKeyList);
 
             $("#instructions-text").text("Now select which player you want to be.");
 
@@ -341,6 +472,7 @@ $(document).ready(function () {
             // text created to indicate a player has joined the chat
             // only happens if the user enters a name and hits the submit button
             chatMSG = userInputtedName + " has joined!";
+            console.log("join chatmsg: " + chatMSG);
 
             // Marks the name as System (as in system event) and the join text msg to text
             chatLog.push({
@@ -356,13 +488,19 @@ $(document).ready(function () {
     // Claim Player function, after the user types their name in, there is two buttons to click to select to be either player 1 or player 2
     $(".claim-player").on("click", function (event) {
         var whichPlayer = $(this).attr("id");
+        console.log("");
+        console.log("whichPlayer:  " + whichPlayer);
 
         // sets the localplayer variable to "taken" for either player 1 or 2 depending on which side the player wants to be on
         // also pushes that data to the firebase database
         if (whichPlayer === "claim-player1") {
 
+            console.log("user clicked to claim player 1 slot");
+
             localplayer1Status = "taken";
 
+
+            console.log("setting player1 to object data");
             player1 = {
                 player: userInputtedName,
                 wins: playerWins,
@@ -371,6 +509,11 @@ $(document).ready(function () {
                 playerslot: "player1",
                 choice: ""
             }
+
+
+            console.log("player1");
+            console.log(player1);
+
 
             $("#player1-side-text").text("Welcome " + userInputtedName);
             $("#claim-player1").addClass("hideThis");
@@ -384,8 +527,12 @@ $(document).ready(function () {
         }
         else if (whichPlayer === "claim-player2") {
 
+            console.log("user clicked to claim player 2 slot");
+
             localplayer2Status = "taken";
 
+
+            console.log("setting player2 to object data");
             player2 = {
                 player: userInputtedName,
                 wins: playerWins,
@@ -394,6 +541,10 @@ $(document).ready(function () {
                 playerslot: "player2",
                 choice: ""
             }
+
+
+            console.log("player2");
+            console.log(player2);
 
             $("#player2-side-text").text("Welcome, " + userInputtedName);
             $("#claim-player2").addClass("hideThis");
@@ -412,19 +563,28 @@ $(document).ready(function () {
     // to click on
     // Will update the HTML to show the icon of which choice they picked
     $(".rps-buttons").on("click", function (event) {
+        console.log("");
+        console.log("RPS button clicked");
+
         var whichRPSButton = $(this).attr("id");
 
+        console.log("whichRPSButton:  " + whichRPSButton);
+
         if (localplayer1Status === "taken") {
+            console.log("Player 1 side");
             switch (whichRPSButton) {
                 case "p1-rock-button":
+                    console.log("Player 1 picked rock");
                     player1choice = "rock";
                     $("#p1-rps-img").html("<i class='far fa-hand-rock fa-5x'></i>");
                     break;
                 case "p1-paper-button":
+                    console.log("Player 1 picked paper");
                     player1choice = "paper";
                     $("#p1-rps-img").html("<i class='far fa-hand-paper fa-5x'></i>");
                     break;
                 case "p1-scissors-button":
+                    console.log("Player 1 picked scissors");
                     player1choice = "scissors";
                     $("#p1-rps-img").html("<i class='far fa-hand-scissors fa-5x fa-flip-horizontal'></i>");
                     break;
@@ -448,16 +608,20 @@ $(document).ready(function () {
         }
 
         if (localplayer2Status === "taken") {
+            console.log("Player 2 side");
             switch (whichRPSButton) {
                 case "p2-rock-button":
+                    console.log("Player 2 picked rock");
                     player2choice = "rock";
                     $("#p2-rps-img").html("<i class='far fa-hand-rock fa-5x fa-flip-horizontal'></i>");
                     break;
                 case "p2-paper-button":
+                    console.log("Player 2 picked paper");
                     $("#p2-rps-img").html("<i class='far fa-hand-paper fa-5x fa-flip-horizontal'></i>");
                     player2choice = "paper";
                     break;
                 case "p2-scissors-button":
+                    console.log("Player 2 picked scissors");
                     $("#p2-rps-img").html("<i class='far fa-hand-scissors fa-5x'></i>");
                     player2choice = "scissors";
                     break;
@@ -483,10 +647,13 @@ $(document).ready(function () {
 
     // Button listener for the send chat button
     $("#sendChat").on('click', function (event) {
+        console.log("");
+        console.log("send chat button clicked");
         // prevents page from refreshing
         event.preventDefault();
 
         var text = $("#chatText").val();
+        console.log(text)
 
         // if there's any text that exists, pushes that text to the firebase database
         if (text) {
@@ -508,10 +675,13 @@ $(document).ready(function () {
     // This function is used to set up the game board with the rock-paper-scissors buttons enabled
     // and updating instructions text
     function setUpRPSpanels() {
+        console.log("setting up board for both players");
 
         if ((localplayer1Status === "taken") || (localplayer2Status === "taken")) {
+            console.log("if local player 1 or 2 status set to taken ");
 
             if (localplayer1Status === "taken") {
+                console.log("unhiding RPS buttons on player 1 side");
                 $("#p1-rock-button").removeClass("hideThis");
                 $("#p1-paper-button").removeClass("hideThis");
                 $("#p1-scissors-button").removeClass("hideThis");
@@ -520,6 +690,7 @@ $(document).ready(function () {
             }
 
             if (localplayer2Status === "taken") {
+                console.log("unhiding RPS buttons on player 2 side");
                 $("#p2-rock-button").removeClass("hideThis");
                 $("#p2-paper-button").removeClass("hideThis");
                 $("#p2-scissors-button").removeClass("hideThis");
@@ -531,6 +702,7 @@ $(document).ready(function () {
 
         $("#instructions-text").text("Make a choice between rock-paper-scissors.");
 
+        console.log("initializing both players turn to null");
         turnComplete.set({
             player1: null,
             player2: null
@@ -540,6 +712,12 @@ $(document).ready(function () {
 
     // This function determins who won the round between player 1 and player 2 based on their choices
     function decision() {
+        console.log("");
+        console.log("decision function called");
+
+        console.log("player1's choice: " + player1.choice);
+        console.log("player2's choice: " + player2.choice);
+
         var versusIMG = $("<img>");
 
         versusIMG.attr({ src: "./assets/images/vs.png", height: "200", align: "middle" });
@@ -550,14 +728,17 @@ $(document).ready(function () {
         // Show Player 1's choice in the middle div for everyone to see
         switch (player1.choice) {
             case "rock":
+                console.log("Showing rock on P1 side");
                 player1choice = "rock";
                 $("#show-p1-results").html("<i class='far fa-hand-rock fa-5x' style='color:white'></i>");
                 break;
             case "paper":
+                console.log("Showing paper on P1 side");
                 player1choice = "paper";
                 $("#show-p1-results").html("<i class='far fa-hand-paper fa-5x' style='color:white'></i>");
                 break;
             case "scissors":
+                console.log("Showing scissors on P1 side");
                 player1choice = "scissors";
                 $("#show-p1-results").html("<i class='far fa-hand-scissors fa-5x fa-flip-horizontal' style='color:white'></i>");
                 break;
@@ -566,14 +747,17 @@ $(document).ready(function () {
         // Show Player 2's choice in the middle div for everyone to see
         switch (player2.choice) {
             case "rock":
+                console.log("Showing rock on P2 side");
                 player2choice = "rock";
                 $("#show-p2-results").html("<i class='far fa-hand-rock fa-5x fa-flip-horizontal' style='color:white'></i>");
                 break;
             case "paper":
+                console.log("Showing paper on P2 side");
                 player1choice = "paper";
                 $("#show-p2-results").html("<i class='far fa-hand-paper fa-5x fa-flip-horizontal' style='color:white'></i>");
                 break;
             case "scissors":
+                console.log("Showing scissors on P2 side");
                 player1choice = "scissors";
                 $("#show-p2-results").html("<i class='far fa-hand-scissors fa-5x' style='color:white'></i>");
                 break;
@@ -584,6 +768,9 @@ $(document).ready(function () {
         if (player1.choice === "rock") {
             switch (player2.choice) {
                 case "rock":
+                    console.log("Player 1's rock ties with Player 2's rock");
+                    console.log("TIE");
+
                     $("#rps-conclusion").text("ROCK versus ROCK. No winner, it's a TIE!");
 
                     database.ref("/players/" + player1Key).update({
@@ -596,6 +783,9 @@ $(document).ready(function () {
 
                     break;
                 case "paper":
+                    console.log("Player 1's rock gets covered by Player 2's paper");
+                    console.log("Player 2 wins!");
+
                     $("#rps-conclusion").text("Player 1's rock gets covered by Player 2's paper. Player 2 WINS!");
 
                     database.ref("/players/" + player1Key).update({
@@ -608,6 +798,9 @@ $(document).ready(function () {
 
                     break;
                 case "scissors":
+                    console.log("Player 1's rock crushes Player 2's scissors");
+                    console.log("Player 1 wins!");
+
                     $("#rps-conclusion").text("Player 1's rock crushes Player 2's paper. Player 1 WINS!");
 
                     database.ref("/players/" + player1Key).update({
@@ -625,6 +818,9 @@ $(document).ready(function () {
         if (player1.choice === "paper") {
             switch (player2.choice) {
                 case "rock":
+                    console.log("Player 1's paper covers Player 2's rock");
+                    console.log("Player 1 wins!");
+
                     $("#rps-conclusion").text("Player 1's paper covers Player 2's rock. Player 1 WINS!");
 
                     database.ref("/players/" + player1Key).update({
@@ -637,6 +833,9 @@ $(document).ready(function () {
 
                     break;
                 case "paper":
+                    console.log("Player 1's paper ties with Player 2's paper");
+                    console.log("TIE");
+
                     $("#rps-conclusion").text("PAPER versus PAPER. No winner, it's a TIE!");
 
                     database.ref("/players/" + player1Key).update({
@@ -649,6 +848,9 @@ $(document).ready(function () {
 
                     break;
                 case "scissors":
+                    console.log("Player 1's rock gets cut by Player 2's scissors");
+                    console.log("Player 2 wins!");
+
                     $("#rps-conclusion").text("Player 1's paper gets cut by Player 2's scissors. Player 2 WINS!");
 
                     database.ref("/players/" + player1Key).update({
@@ -666,6 +868,9 @@ $(document).ready(function () {
         if (player1.choice === "scissors") {
             switch (player2.choice) {
                 case "rock":
+                    console.log("Player 1's scissors gets crushed by Player 2's rock");
+                    console.log("Player 2 wins!");
+
                     $("#rps-conclusion").text("Player 1's scissors gets crushed by Player 2's rock. Player 2 WINS!");
 
                     database.ref("/players/" + player1Key).update({
@@ -678,6 +883,9 @@ $(document).ready(function () {
 
                     break;
                 case "paper":
+                    console.log("Player 1's scissors cuts Player 2's paper");
+                    console.log("Player 1 wins!");
+
                     $("#rps-conclusion").text("Player 1's scissors cuts Player 2's paper. Player 1 WINS!");
 
                     database.ref("/players/" + player1Key).update({
@@ -690,6 +898,9 @@ $(document).ready(function () {
 
                     break;
                 case "scissors":
+                    console.log("Player 1's scissors ties with Player 2's scissors");
+                    console.log("TIE");
+
                     $("#rps-conclusion").text("SCISSORS versus SCISSORS. No winner, it's a TIE!");
 
                     database.ref("/players/" + player1Key).update({
@@ -704,6 +915,9 @@ $(document).ready(function () {
             }
         }
 
+
+        console.log("decision finished");
+
         // delays resetting the board by 10 seconds to allow everyone time to see the outcome of the round
         setTimeout(() => {
             resetboard()
@@ -712,6 +926,9 @@ $(document).ready(function () {
 
     // Used between rounds to reset the text on the board then calls setUpRPSPanels() function to set up the board there
     function resetboard() {
+        console.log("");
+        console.log("Reset board function called");
+
         $("#rps-conclusion").text("");
 
         $("#show-p1-results").html("");
@@ -728,6 +945,8 @@ $(document).ready(function () {
     // This function is only called when a user has disconnected
     // It resets all global values and the HTML displayed back to original state as if the user first loaded the page
     function newGame() {
+        console.log("");
+        console.log("newGame() function called");
         player1 = null;
         player2 = null;
 
@@ -794,8 +1013,6 @@ $(document).ready(function () {
         $("#chatText").prop("disabled", true);
         $("#sendChat").prop("disabled", true);
 
-        // enables submit button for name submission
-        $("#add-player").prop("disabled", false);
         $("#playername-input").val("");
 
         $("#player1-scorecard").text("");
