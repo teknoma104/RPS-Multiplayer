@@ -74,6 +74,9 @@ $(document).ready(function () {
     $("#claim-player1").prop("disabled", true);
     $("#claim-player2").prop("disabled", true);
 
+    var intervalID = window.setInterval(function () {
+        $("#playername-input").toggleClass("active");
+    }, 1000);
 
 
     // ================== FIREBASE LISTENERS  ==================
@@ -196,9 +199,9 @@ $(document).ready(function () {
 
         console.log("msg: " + msg);
 
-        console.log("player1 object:  " );
+        console.log("player1 object:  ");
         console.log(player1);
-        console.log("player2 object:  " );
+        console.log("player2 object:  ");
         console.log(player2);
         console.log("player1.player:  " + player1.player);
         console.log("player2.player:  " + player2.player);
@@ -297,6 +300,14 @@ $(document).ready(function () {
         // Don't refresh the page!
         event.preventDefault();
 
+        clearInterval(intervalID);
+        $("#playername-input").removeClass("active");
+
+        intervalID = window.setInterval(function () {
+            $("#claim-player1").toggleClass("active");
+            $("#claim-player2").toggleClass("active");
+        }, 1000);
+
         var chatMSG = "";
 
         userInputtedName = $("#playername-input").val().trim();
@@ -356,6 +367,10 @@ $(document).ready(function () {
     // Claim Player function, after the user types their name in, there is two buttons to click to select to be either player 1 or player 2
     $(".claim-player").on("click", function (event) {
         var whichPlayer = $(this).attr("id");
+
+        clearInterval(intervalID);
+        $("#claim-player1").removeClass("active");
+        $("#claim-player2").removeClass("active");
 
         // sets the localplayer variable to "taken" for either player 1 or 2 depending on which side the player wants to be on
         // also pushes that data to the firebase database

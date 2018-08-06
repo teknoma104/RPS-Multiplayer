@@ -76,6 +76,9 @@ $(document).ready(function () {
     $("#claim-player1").prop("disabled", true);
     $("#claim-player2").prop("disabled", true);
 
+    var intervalID = window.setInterval(function () {
+        $("#playername-input").toggleClass("active");
+    }, 1000);
 
 
     // ================== FIREBASE LISTENERS  ==================
@@ -257,12 +260,16 @@ $(document).ready(function () {
 
         console.log("msg: " + msg);
 
-        console.log("player1.name:  " + player1.name);
-        console.log("player2.name:  " + player2.name);
+        console.log("player1 object:  ");
+        console.log(player1);
+        console.log("player2 object:  ");
+        console.log(player2);
+        console.log("player1.player:  " + player1.player);
+        console.log("player2.player:  " + player2.player);
 
 
-        if (disconnectedPlayerName === player2.name) {
-            console.log("(disconnectedPlayerName === player2.name) = " + (disconnectedPlayerName === player2.name));
+        if (disconnectedPlayerName === player2.player) {
+            console.log("(disconnectedPlayerName === player2.player) = " + (disconnectedPlayerName === player2.player));
             // resets if user is player 1 and player 2 d/c's
             if (localplayer1Status === "taken") {
                 console.log("localplayer1status:  " + localplayer1Status);
@@ -279,8 +286,8 @@ $(document).ready(function () {
             }
         }
 
-        if (disconnectedPlayerName === player1.name) {
-            console.log("disconnectedPlayerName === player1.name = " + disconnectedPlayerName === player1.name);
+        if (disconnectedPlayerName === player1.player) {
+            console.log("disconnectedPlayerName === player1.player = " + disconnectedPlayerName === player1.player);
             // resets if user is player 2 and player 1 d/c's
             if (localplayer2Status === "taken") {
                 console.log("localplayer2status:  " + localplayer2Status);
@@ -364,6 +371,7 @@ $(document).ready(function () {
         if ((localplayer2Status === "taken") && (player1turn === "done"))
             $("#player1-info-text").text("Player 1 has made a move.");
 
+        // Both players finished picking their choices, calling decision function
         if ((player1turn === "done") && (player2turn === "done")) {
             console.log("Both players finished picking their choices, calling decision function");
             decision();
@@ -420,6 +428,14 @@ $(document).ready(function () {
 
         // Don't refresh the page!
         event.preventDefault();
+
+        clearInterval(intervalID);
+        $("#playername-input").removeClass("active");
+
+        intervalID = window.setInterval(function () {
+            $("#claim-player1").toggleClass("active");
+            $("#claim-player2").toggleClass("active");
+        }, 1000);
 
         var chatMSG = "";
 
@@ -488,8 +504,10 @@ $(document).ready(function () {
     // Claim Player function, after the user types their name in, there is two buttons to click to select to be either player 1 or player 2
     $(".claim-player").on("click", function (event) {
         var whichPlayer = $(this).attr("id");
-        console.log("");
-        console.log("whichPlayer:  " + whichPlayer);
+
+        clearInterval(intervalID);
+        $("#claim-player1").removeClass("active");
+        $("#claim-player2").removeClass("active");
 
         // sets the localplayer variable to "taken" for either player 1 or 2 depending on which side the player wants to be on
         // also pushes that data to the firebase database
@@ -1013,6 +1031,8 @@ $(document).ready(function () {
         $("#chatText").prop("disabled", true);
         $("#sendChat").prop("disabled", true);
 
+        // enables submit button for name submission
+        $("#add-player").prop("disabled", false);
         $("#playername-input").val("");
 
         $("#player1-scorecard").text("");
