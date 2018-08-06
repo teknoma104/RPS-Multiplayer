@@ -124,3 +124,11 @@ td {
     background-color: #555555;
     color: white;
 }
+
+
+.myGlower.active {
+    border-color: blue;
+    -webkit-box-shadow: 0 0 5px blue;
+       -moz-box-shadow: 0 0 5px blue;
+            box-shadow: 0 0 5px blue;
+}

@@ -74,6 +74,9 @@ $(document).ready(function () {
     $("#claim-player1").prop("disabled", true);
     $("#claim-player2").prop("disabled", true);
 
+    var intervalID = window.setInterval(function () {
+        $("#playername-input").toggleClass("active");
+    }, 1000);
 
 
     // ================== FIREBASE LISTENERS  ==================
@@ -178,38 +181,15 @@ $(document).ready(function () {
     // Once a disconnect happens, this will restart the game as if the user refreshed/first loaded the page
     // So everyone has to re-enter a name again and pick which player side they want to be on
     playerList.on("child_removed", function (snapshot) {
-        console.log("");
-        console.log("Someone d/c'd");
 
         var test = snapshot.val();
         var disconnectedPlayerName = test.player;
         var disconnectedPlayerSlot = test.playerslot;
-
-        console.log("test:  ");
-        console.log(test);
-        console.log("disconnectedPlayerName:   " + disconnectedPlayerName);
-        console.log("disconnectedPlayerSlot:   " + disconnectedPlayerSlot);
-
-        console.log("snapshot key:   " + snapshot.key);
-
         var msg = disconnectedPlayerName + " has disconnected!";
 
-        console.log("msg: " + msg);
-
-        console.log("player1 object:  " );
-        console.log(player1);
-        console.log("player2 object:  " );
-        console.log(player2);
-        console.log("player1.player:  " + player1.player);
-        console.log("player2.player:  " + player2.player);
-
-
         if (disconnectedPlayerName === player2.player) {
-            console.log("(disconnectedPlayerName === player2.player) = " + (disconnectedPlayerName === player2.player));
             // resets if user is player 1 and player 2 d/c's
             if (localplayer1Status === "taken") {
-                console.log("localplayer1status:  " + localplayer1Status);
-                console.log("resets if user is player 1 and player 2 d/c's");
 
                 if (disconnectedPlayerSlot === "player2")
                     player2 = null;
@@ -223,11 +203,8 @@ $(document).ready(function () {
         }
 
         if (disconnectedPlayerName === player1.player) {
-            console.log("disconnectedPlayerName === player1.player = " + disconnectedPlayerName === player1.player);
             // resets if user is player 2 and player 1 d/c's
             if (localplayer2Status === "taken") {
-                console.log("localplayer2status:  " + localplayer2Status);
-                console.log("resets if user is player 2 and player 1 d/c's");
 
                 if (disconnectedPlayerSlot === "player1")
                     player1 = null;
@@ -297,6 +274,14 @@ $(document).ready(function () {
         // Don't refresh the page!
         event.preventDefault();
 
+        clearInterval(intervalID);
+        $("#playername-input").removeClass("active");
+
+        intervalID = window.setInterval(function () {
+            $("#claim-player1").toggleClass("active");
+            $("#claim-player2").toggleClass("active");
+        }, 1000);
+
         var chatMSG = "";
 
         userInputtedName = $("#playername-input").val().trim();
@@ -356,6 +341,10 @@ $(document).ready(function () {
     // Claim Player function, after the user types their name in, there is two buttons to click to select to be either player 1 or player 2
     $(".claim-player").on("click", function (event) {
         var whichPlayer = $(this).attr("id");
+
+        clearInterval(intervalID);
+        $("#claim-player1").removeClass("active");
+        $("#claim-player2").removeClass("active");
 
         // sets the localplayer variable to "taken" for either player 1 or 2 depending on which side the player wants to be on
         // also pushes that data to the firebase database
